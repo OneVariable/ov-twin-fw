@@ -1,26 +1,30 @@
-//! This example shows powerful PIO module in the RP2040 chip to communicate with WS2812 LED modules.
-//! See (https://www.sparkfun.com/categories/tags/ws2812)
-
 #![no_std]
 #![no_main]
 
 use defmt::*;
 use embassy_executor::Spawner;
-use embassy_rp::adc::{self, Adc, Config as AdcConfig};
-use embassy_rp::dma::{self, AnyChannel};
-use embassy_rp::gpio::{Input, Level, Output, Pull};
-use embassy_rp::peripherals::{PIN_16, PIN_17, PIO0, SPI0, UART0, USB};
-use embassy_rp::pio::{
-    Common, Config as PioConfig, FifoJoin, Instance, Pio, PioPin, ShiftConfig, ShiftDirection, StateMachine,
+use embassy_futures::join::join;
+use embassy_rp::{
+    adc::{self, Adc, Config as AdcConfig},
+    bind_interrupts, clocks,
+    dma::{self, AnyChannel},
+    gpio::{Input, Level, Output, Pull},
+    into_ref,
+    peripherals::{PIN_16, PIN_17, PIO0, SPI0, UART0, USB},
+    pio::{
+        Common, Config as PioConfig, FifoJoin, Instance, Pio, PioPin, ShiftConfig, ShiftDirection,
+        StateMachine,
+    },
+    spi::{self, Spi},
+    uart::{self, BufferedUart},
+    usb, Peripheral, PeripheralRef,
 };
-use embassy_rp::usb;
-use embassy_rp::uart::{self, BufferedUart};
-use embassy_rp::spi::{Spi, self};
-use embassy_rp::{bind_interrupts, clocks, into_ref, Peripheral, PeripheralRef};
 use embassy_time::{Delay, Duration, Ticker, Timer};
-use embassy_usb::class::cdc_acm::{CdcAcmClass, State};
-use embassy_usb::driver::EndpointError;
-use embassy_usb::Builder;
+use embassy_usb::{
+    class::cdc_acm::{CdcAcmClass, State},
+    driver::EndpointError,
+    Builder,
+};
 use embedded_hal_bus::spi::ExclusiveDevice;
 use embedded_io_async::{Read, Write};
 use fixed::types::U24F8;
@@ -28,7 +32,6 @@ use fixed_macro::fixed;
 use lis3dh_async::Lis3dh;
 use smart_leds::RGB8;
 use {defmt_rtt as _, panic_probe as _};
-use embassy_futures::join::join;
 
 bind_interrupts!(struct Irqs {
     PIO0_IRQ_0 => embassy_rp::pio::InterruptHandler<PIO0>;
@@ -116,7 +119,9 @@ impl<'d, P: Instance, const S: usize, const N: usize> Ws2812<'d, P, S, N> {
         // Precompute the word bytes from the colors
         let mut words = [0u32; N];
         for i in 0..N {
-            let word = (u32::from(colors[i].g) << 24) | (u32::from(colors[i].r) << 16) | (u32::from(colors[i].b) << 8);
+            let word = (u32::from(colors[i].g) << 24)
+                | (u32::from(colors[i].r) << 16)
+                | (u32::from(colors[i].b) << 8);
             words[i] = word;
         }
 
@@ -147,7 +152,9 @@ async fn main(spawner: Spawner) {
     info!("Start");
     let p = embassy_rp::init(Default::default());
 
-    let Pio { mut common, sm0, .. } = Pio::new(p.PIO0, Irqs);
+    let Pio {
+        mut common, sm0, ..
+    } = Pio::new(p.PIO0, Irqs);
 
     let butts = [
         Input::new(p.PIN_0, Pull::Up),
@@ -182,8 +189,6 @@ async fn main(spawner: Spawner) {
 
     // BRX: 17, BTX 16
 
-
-
     let driver = usb::Driver::new(p.USB, Irqs);
 
     // Create embassy-usb Config
@@ -197,7 +202,6 @@ async fn main(spawner: Spawner) {
     config.device_sub_class = 0x02;
     config.device_protocol = 0x01;
     config.composite_with_iads = true;
-
 
     // Create embassy-usb DeviceBuilder using the driver and config.
     // It needs some buffers for building the descriptors.
@@ -241,7 +245,6 @@ async fn main(spawner: Spawner) {
     spawner.must_spawn(acc_task(bus));
     spawner.must_spawn(uart_task(p.PIN_16, p.PIN_17, p.UART0));
 
-
     // Run everything concurrently.
     // If we had made everything `'static` above instead, we could do this using separate tasks instead.
     join(usb_fut, echo_fut).await;
@@ -251,7 +254,15 @@ async fn main(spawner: Spawner) {
 async fn uart_task(txp: PIN_16, rxp: PIN_17, uart: UART0) -> ! {
     let mut tx_buf = [0u8; 16];
     let mut rx_buf = [0u8; 16];
-    let uart = BufferedUart::new(uart, Irqs, txp, rxp, &mut tx_buf, &mut rx_buf, uart::Config::default());
+    let uart = BufferedUart::new(
+        uart,
+        Irqs,
+        txp,
+        rxp,
+        &mut tx_buf,
+        &mut rx_buf,
+        uart::Config::default(),
+    );
     let (mut rx, mut tx) = uart.split();
     let mut scratch = [0u8; 32];
 
@@ -333,7 +344,6 @@ async fn rgb(mut ws2812: Ws2812<'static, PIO0, 0, 24>) {
     }
 }
 
-
 struct Disconnected {}
 
 impl From<EndpointError> for Disconnected {
@@ -345,7 +355,9 @@ impl From<EndpointError> for Disconnected {
     }
 }
 
-async fn echo<'d, T: usb::Instance + 'd>(class: &mut CdcAcmClass<'d, usb::Driver<'d, T>>) -> Result<(), Disconnected> {
+async fn echo<'d, T: usb::Instance + 'd>(
+    class: &mut CdcAcmClass<'d, usb::Driver<'d, T>>,
+) -> Result<(), Disconnected> {
     let mut buf = [0; 64];
     loop {
         let n = class.read_packet(&mut buf).await?;
