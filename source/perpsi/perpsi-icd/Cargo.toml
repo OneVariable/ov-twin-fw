@@ -16,4 +16,4 @@ features = ["experimental-derive"]
 version = "0.4"
 
 [patch.crates-io]
-postcard-rpc = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "012f3c1443cdeb4b31468c81b10266fb89d241c1" }
+postcard-rpc = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "2c11414726d11f3ce34b0e69c99e3b5dc5bdf3ee" }
