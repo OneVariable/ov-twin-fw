@@ -24,6 +24,8 @@ postcard-rpc            = { version = "0.4", features = ["embassy-usb-0_2-server
 postcard                = { version = "1.0.8", features = ["experimental-derive"] }
 portable-atomic         = { version = "1.6.0", features = ["critical-section"] }
 
+perpsi-icd = { path = "../perpsi-icd" }
+
 cortex-m-rt         = "0.7.0"
 defmt               = "0.3"
 defmt-rtt           = "0.4"
@@ -48,4 +50,4 @@ embassy-time         = { git = "https://github.com/jamesmunns/embassy",     rev 
 embassy-usb          = { git = "https://github.com/jamesmunns/embassy",     rev = "0d0d8e14e2b0e81307ff70c5a31e300785da19f9" }
 embassy-usb-driver   = { git = "https://github.com/jamesmunns/embassy",     rev = "0d0d8e14e2b0e81307ff70c5a31e300785da19f9" }
 static_cell          = { git = "https://github.com/jamesmunns/static-cell", rev = "c0337f742edcfc5d7bf91f008e37ccdb53cf2cce" }
-postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "012f3c1443cdeb4b31468c81b10266fb89d241c1" }
+postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "d8a0576644f840ac097c322b4c12fa15ff81d1dd" }

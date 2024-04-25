@@ -3,6 +3,18 @@ name = "perpsi-icd"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+default-features = false
 
-[dependencies]
+[dependencies.postcard]
+version = "1.0"
+features = ["experimental-derive"]
+
+[dependencies.postcard-rpc]
+version = "0.4"
+features = ["embassy-usb-0_2-server"]
+
+[patch.crates-io]
+postcard-rpc = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "012f3c1443cdeb4b31468c81b10266fb89d241c1" }

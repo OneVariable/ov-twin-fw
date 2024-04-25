@@ -1103,6 +1103,7 @@ dependencies = [
  "heapless 0.8.0",
  "lis3dh-async",
  "panic-probe",
+ "perpsi-icd",
  "pio",
  "pio-proc",
  "portable-atomic",
@@ -1111,6 +1112,15 @@ dependencies = [
  "rand",
  "smart-leds",
  "static_cell",
+]
+
+[[package]]
+name = "perpsi-icd"
+version = "0.1.0"
+dependencies = [
+ "postcard",
+ "postcard-rpc",
+ "serde",
 ]
 
 [[package]]
@@ -1220,7 +1230,7 @@ dependencies = [
 [[package]]
 name = "postcard-rpc"
 version = "0.4.2"
-source = "git+https://github.com/jamesmunns/postcard-rpc?rev=012f3c1443cdeb4b31468c81b10266fb89d241c1#012f3c1443cdeb4b31468c81b10266fb89d241c1"
+source = "git+https://github.com/jamesmunns/postcard-rpc?rev=d8a0576644f840ac097c322b4c12fa15ff81d1dd#d8a0576644f840ac097c322b4c12fa15ff81d1dd"
 dependencies = [
  "embassy-executor",
  "embassy-sync",
