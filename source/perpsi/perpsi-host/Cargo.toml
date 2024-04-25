@@ -3,6 +3,15 @@ name = "perpsi-host"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies.tokio]
+version = "1.37.0"
+features = [
+    "rt-multi-thread",
+    "macros"
+]
 
-[dependencies]
+[dependencies.perpsi-host-client]
+path = "../perpsi-host-client"
+
+[patch.crates-io]
+postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "d8a0576644f840ac097c322b4c12fa15ff81d1dd" }

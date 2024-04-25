@@ -3,6 +3,16 @@ name = "perpsi-host-client"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies.perpsi-icd]
+path = "../perpsi-icd"
 
-[dependencies]
+[dependencies.postcard-rpc]
+version = "0.4"
+features = [
+    "use-std",
+    "raw-nusb",
+]
+
+[patch.crates-io]
+static_cell          = { git = "https://github.com/jamesmunns/static-cell", rev = "c0337f742edcfc5d7bf91f008e37ccdb53cf2cce" }
+postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "d8a0576644f840ac097c322b4c12fa15ff81d1dd" }

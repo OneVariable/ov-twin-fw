@@ -27,7 +27,9 @@ async fn main(spawner: Spawner) {
     info!("Start");
     let p = embassy_rp::init(Default::default());
     let driver = usb::Driver::new(p.USB, Irqs);
-    let config = example_config();
+    let mut config = example_config();
+    config.manufacturer = Some("OneVariable");
+    config.product = Some("ov-twin");
     let buffers = ALL_BUFFERS.take();
     let (device, ep_in, ep_out) = configure_usb(driver, &mut buffers.usb_device, config);
     let dispatch = Dispatcher::new(&mut buffers.tx_buf, ep_in);
