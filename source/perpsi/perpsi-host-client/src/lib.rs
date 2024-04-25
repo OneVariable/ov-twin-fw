@@ -10,11 +10,8 @@ pub type Result<T> = std::result::Result<T, HostErr<WireError>>;
 
 impl PerpsiClient {
     pub fn new() -> Self {
-        let client = HostClient::new_raw_nusb(
-            |d| d.product_string() == Some("ov-twin"),
-            ERROR_PATH,
-            8,
-        );
+        let client =
+            HostClient::new_raw_nusb(|d| d.product_string() == Some("ov-twin"), ERROR_PATH, 8);
         Self { client }
     }
 
