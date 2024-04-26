@@ -10,7 +10,7 @@ use postcard_rpc::host_client::{HostClient, HostErr};
 use postcard_rpc::standard_icd::{WireError, ERROR_PATH};
 
 pub struct PerpsiClient {
-    client: HostClient<WireError>,
+    pub client: HostClient<WireError>,
 }
 
 // --- Move to standard_icd?

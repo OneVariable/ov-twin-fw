@@ -11,7 +11,7 @@ use embassy_time::{Delay, Duration, Ticker};
 use embassy_usb::UsbDevice;
 use embedded_hal_bus::spi::ExclusiveDevice;
 use lis3dh_async::{Lis3dh, Lis3dhSPI};
-use perpsi_icd::{BadPositionError, GetUniqueIdEndpoint, PingEndpoint, Rgb8, SetAllLedEndpoint, SetSingleLedEndpoint, SingleLed, StartAccel, StartAccelerationEndpoint, StopAccelerationEndpoint};
+use perpsi_icd::{AccelTopic, Acceleration, BadPositionError, GetUniqueIdEndpoint, PingEndpoint, Rgb8, SetAllLedEndpoint, SetSingleLedEndpoint, SingleLed, StartAccel, StartAccelerationEndpoint, StopAccelerationEndpoint};
 use portable_atomic::{AtomicBool, Ordering};
 use postcard_rpc::{
     define_dispatch,
@@ -182,11 +182,21 @@ async fn accelerometer_handler(context: PerpsiSpawnContext, header: WireHeader, 
     accel.set_range(lis3dh_async::Range::G8).await.unwrap();
 
     let mut ticker = Ticker::every(Duration::from_millis(rqst.interval_ms.into()));
-
+    let mut seq = 0;
     while !STOP.load(Ordering::Acquire) {
         ticker.next().await;
         let acc = accel.accel_raw().await.unwrap();
         defmt::println!("ACC: {=i16},{=i16},{=i16}", acc.x, acc.y, acc.z);
+        let msg = Acceleration {
+            x: acc.x,
+            y: acc.y,
+            z: acc.z,
+        };
+        if sender.publish::<AccelTopic>(seq, &msg).await.is_err() {
+            defmt::error!("Send error!");
+            break;
+        }
+        seq = seq.wrapping_add(1);
     }
     defmt::info!("Stopping!");
     STOP.store(false, Ordering::Release);

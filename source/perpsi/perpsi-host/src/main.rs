@@ -1,4 +1,4 @@
-use std::io::{stdout, Write};
+use std::{io::{stdout, Write}, time::{Duration, Instant}};
 
 use perpsi_host_client::{PerpsiClient, icd};
 
@@ -43,6 +43,38 @@ async fn main() {
                     panic!();
                 };
                 client.set_all_rgb_single(r, g, b).await.unwrap();
+            }
+            ["accel", "listen", ms, range, dur] => {
+                let Ok(ms) = ms.parse::<u32>() else {
+                    println!("Bad ms: {ms}");
+                    continue;
+                };
+                let Ok(dur) = dur.parse::<u32>() else {
+                    println!("Bad dur: {dur}");
+                    continue;
+                };
+                let range = match *range {
+                    "2" => icd::AccelRange::G2,
+                    "4" => icd::AccelRange::G4,
+                    "8" => icd::AccelRange::G8,
+                    "16" => icd::AccelRange::G16,
+                    _ => {
+                        println!("Bad range: {range}");
+                        continue;
+                    }
+                };
+
+                let mut sub = client.client.subscribe::<icd::AccelTopic>(8).await.unwrap();
+                client.start_accelerometer(ms, range).await.unwrap();
+                println!("Started!");
+                let dur = Duration::from_millis(dur.into());
+                let start = Instant::now();
+                while start.elapsed() < dur {
+                    let val = sub.recv().await.unwrap();
+                    println!("acc: {val:?}");
+                }
+                client.stop_accelerometer().await.unwrap();
+                println!("Stopped!");
             }
             ["accel", "start", ms, range] => {
                 let Ok(ms) = ms.parse::<u32>() else {

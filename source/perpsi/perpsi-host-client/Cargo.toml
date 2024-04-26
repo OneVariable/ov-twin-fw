@@ -15,4 +15,4 @@ features = [
 
 [patch.crates-io]
 static_cell          = { git = "https://github.com/jamesmunns/static-cell", rev = "c0337f742edcfc5d7bf91f008e37ccdb53cf2cce" }
-postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "b5090f49de5eb6be11df895ea62d089ba6705d9d" }
+postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "eb304c2f5d9bbda796859b63d831e83d7b82961a" }
