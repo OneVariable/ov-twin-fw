@@ -14,4 +14,4 @@ features = [
 path = "../perpsi-host-client"
 
 [patch.crates-io]
-postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "8e45896029138ef60ca2e8b45249a8ba6caf2685" }
+postcard-rpc         = { git = "https://github.com/jamesmunns/postcard-rpc", rev = "b5090f49de5eb6be11df895ea62d089ba6705d9d" }

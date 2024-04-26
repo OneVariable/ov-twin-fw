@@ -29,7 +29,7 @@ use embedded_hal_bus::spi::ExclusiveDevice;
 use embedded_io_async::{Read, Write};
 use fixed::types::U24F8;
 use fixed_macro::fixed;
-use lis3dh_async::Lis3dh;
+use lis3dh_async::{Lis3dh, Lis3dhSPI};
 use smart_leds::RGB8;
 use {defmt_rtt as _, panic_probe as _};
 
@@ -44,6 +44,8 @@ pub struct Ws2812<'d, P: Instance, const S: usize, const N: usize> {
     dma: PeripheralRef<'d, AnyChannel>,
     sm: StateMachine<'d, P, S>,
 }
+
+pub type Accel = Lis3dh<Lis3dhSPI<ExclusiveDevice<Spi<'static, SPI0, spi::Async>, Output<'static>, Delay>>>;
 
 impl<'d, P: Instance, const S: usize, const N: usize> Ws2812<'d, P, S, N> {
     pub fn new(
@@ -276,7 +278,7 @@ async fn uart_task(txp: PIN_16, rxp: PIN_17, uart: UART0) -> ! {
 
 #[embassy_executor::task]
 async fn acc_task(bus: ExclusiveDevice<Spi<'static, SPI0, spi::Async>, Output<'static>, Delay>) {
-    let mut acc = Lis3dh::new_spi(bus).await.map_err(drop).unwrap();
+    let mut acc: Accel = Lis3dh::new_spi(bus).await.map_err(drop).unwrap();
     let mut ticker = Ticker::every(Duration::from_millis(100));
     acc.set_range(lis3dh_async::Range::G8).await.unwrap();
     loop {

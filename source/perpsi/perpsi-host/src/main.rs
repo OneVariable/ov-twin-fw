@@ -1,6 +1,6 @@
 use std::io::{stdout, Write};
 
-use perpsi_host_client::PerpsiClient;
+use perpsi_host_client::{PerpsiClient, icd};
 
 #[tokio::main]
 async fn main() {
@@ -43,6 +43,29 @@ async fn main() {
                     panic!();
                 };
                 client.set_all_rgb_single(r, g, b).await.unwrap();
+            }
+            ["accel", "start", ms, range] => {
+                let Ok(ms) = ms.parse::<u32>() else {
+                    println!("Bad ms: {ms}");
+                    continue;
+                };
+                let range = match *range {
+                    "2" => icd::AccelRange::G2,
+                    "4" => icd::AccelRange::G4,
+                    "8" => icd::AccelRange::G8,
+                    "16" => icd::AccelRange::G16,
+                    _ => {
+                        println!("Bad range: {range}");
+                        continue;
+                    }
+                };
+
+                client.start_accelerometer(ms, range).await.unwrap();
+                println!("Started!");
+            }
+            ["accel", "stop"] => {
+                let res = client.stop_accelerometer().await.unwrap();
+                println!("Stopped: {res}");
             }
             other => {
                 println!("Error, didn't understand '{other:?};");

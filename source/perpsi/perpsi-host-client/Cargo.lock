@@ -488,7 +488,7 @@ dependencies = [
 [[package]]
 name = "postcard-rpc"
 version = "0.4.2"
-source = "git+https://github.com/jamesmunns/postcard-rpc?rev=8e45896029138ef60ca2e8b45249a8ba6caf2685#8e45896029138ef60ca2e8b45249a8ba6caf2685"
+source = "git+https://github.com/jamesmunns/postcard-rpc?rev=b5090f49de5eb6be11df895ea62d089ba6705d9d#b5090f49de5eb6be11df895ea62d089ba6705d9d"
 dependencies = [
  "heapless 0.8.0",
  "maitake-sync",
