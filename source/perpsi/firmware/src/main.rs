@@ -21,7 +21,6 @@ use postcard_rpc::{
 use smart_leds::{colors::BLACK, RGB8};
 use static_cell::{ConstInitCell, StaticCell};
 use crate::ws2812::Ws2812;
-
 use {defmt_rtt as _, panic_probe as _};
 
 mod ws2812;

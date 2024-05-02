@@ -1,5 +1,3 @@
-
-
 use embassy_rp::{
     bind_interrupts, clocks,
     dma::{self, AnyChannel},
@@ -11,10 +9,8 @@ use embassy_rp::{
     }, Peripheral, PeripheralRef,
 };
 use embassy_time::Timer;
-
 use fixed::types::U24F8;
 use fixed_macro::fixed;
-
 use smart_leds::RGB8;
 use {defmt_rtt as _, panic_probe as _};
 
