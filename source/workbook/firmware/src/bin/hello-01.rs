@@ -3,10 +3,7 @@
 
 use defmt::info;
 use embassy_executor::Spawner;
-use embassy_rp::{
-    peripherals::PIO0,
-    pio::Pio,
-};
+use embassy_rp::{peripherals::PIO0, pio::Pio};
 
 use embassy_time::{Duration, Ticker};
 

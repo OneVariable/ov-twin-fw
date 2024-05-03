@@ -4,9 +4,10 @@ use embassy_rp::{
     into_ref,
     peripherals::PIO0,
     pio::{
-        Common, FifoJoin, Instance, PioPin, ShiftConfig, ShiftDirection,
-        StateMachine, Config as PioConfig,
-    }, Peripheral, PeripheralRef,
+        Common, Config as PioConfig, FifoJoin, Instance, PioPin, ShiftConfig, ShiftDirection,
+        StateMachine,
+    },
+    Peripheral, PeripheralRef,
 };
 use embassy_time::Timer;
 use fixed::types::U24F8;

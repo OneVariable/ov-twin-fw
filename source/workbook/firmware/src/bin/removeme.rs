@@ -4,25 +4,39 @@
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_rp::{
-    bind_interrupts, flash::{Blocking, Flash}, gpio::{Level, Output}, peripherals::{FLASH, PIO0, SPI0, USB}, pio::Pio, spi::{self, Spi}, usb::{self, Driver, Endpoint, Out}
+    bind_interrupts,
+    flash::{Blocking, Flash},
+    gpio::{Level, Output},
+    peripherals::{FLASH, PIO0, SPI0, USB},
+    pio::Pio,
+    spi::{self, Spi},
+    usb::{self, Driver, Endpoint, Out},
 };
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, mutex::Mutex};
 use embassy_time::{Delay, Duration, Ticker};
 use embassy_usb::UsbDevice;
 use embedded_hal_bus::spi::ExclusiveDevice;
 use lis3dh_async::{Lis3dh, Lis3dhSPI};
-use perpsi_icd::{AccelTopic, Acceleration, BadPositionError, GetUniqueIdEndpoint, PingEndpoint, Rgb8, SetAllLedEndpoint, SetSingleLedEndpoint, SingleLed, StartAccel, StartAccelerationEndpoint, StopAccelerationEndpoint};
+use perpsi_icd::{
+    AccelTopic, Acceleration, BadPositionError, GetUniqueIdEndpoint, PingEndpoint, Rgb8,
+    SetAllLedEndpoint, SetSingleLedEndpoint, SingleLed, StartAccel, StartAccelerationEndpoint,
+    StopAccelerationEndpoint,
+};
 use portable_atomic::{AtomicBool, Ordering};
 use postcard_rpc::{
     define_dispatch,
-    target_server::{buffers::AllBuffers, configure_usb, example_config, rpc_dispatch, sender::Sender, SpawnContext},
+    target_server::{
+        buffers::AllBuffers, configure_usb, example_config, rpc_dispatch, sender::Sender,
+        SpawnContext,
+    },
     WireHeader,
 };
 use smart_leds::{colors::BLACK, RGB8};
 use static_cell::{ConstInitCell, StaticCell};
 use workbook_fw::ws2812::{self, Ws2812};
 
-pub type Accel = Lis3dh<Lis3dhSPI<ExclusiveDevice<Spi<'static, SPI0, spi::Async>, Output<'static>, Delay>>>;
+pub type Accel =
+    Lis3dh<Lis3dhSPI<ExclusiveDevice<Spi<'static, SPI0, spi::Async>, Output<'static>, Delay>>>;
 static ACCEL: StaticCell<Mutex<ThreadModeRawMutex, Accel>> = StaticCell::new();
 
 bind_interrupts!(struct Irqs {
@@ -43,9 +57,7 @@ pub struct PerpsiSpawnContext {
 impl SpawnContext for PerpsiContext {
     type SpawnCtxt = PerpsiSpawnContext;
     fn spawn_ctxt(&mut self) -> Self::SpawnCtxt {
-        PerpsiSpawnContext {
-            accel: self.accel,
-        }
+        PerpsiSpawnContext { accel: self.accel }
     }
 }
 
@@ -109,7 +121,12 @@ async fn main(spawner: Spawner) {
     let dispatch = Dispatcher::new(
         &mut buffers.tx_buf,
         ep_in,
-        PerpsiContext { unique_id, ws2812, ws2812_state: [BLACK; 24], accel: accel_ref },
+        PerpsiContext {
+            unique_id,
+            ws2812,
+            ws2812_state: [BLACK; 24],
+            accel: accel_ref,
+        },
     );
 
     spawner.must_spawn(dispatch_task(ep_out, dispatch, &mut buffers.rx_buf));
@@ -144,33 +161,54 @@ fn unique_id_handler(context: &mut PerpsiContext, header: WireHeader, _rqst: ())
     context.unique_id
 }
 
-async fn set_led_handler(context: &mut PerpsiContext, header: WireHeader, rqst: SingleLed) -> Result<(), BadPositionError> {
+async fn set_led_handler(
+    context: &mut PerpsiContext,
+    header: WireHeader,
+    rqst: SingleLed,
+) -> Result<(), BadPositionError> {
     info!("set_led: seq - {=u32}", header.seq_no);
     if rqst.position >= 24 {
         return Err(BadPositionError);
     }
     let pos = rqst.position as usize;
-    context.ws2812_state[pos] = RGB8 { r: rqst.rgb.r, g: rqst.rgb.g, b: rqst.rgb.b};
+    context.ws2812_state[pos] = RGB8 {
+        r: rqst.rgb.r,
+        g: rqst.rgb.g,
+        b: rqst.rgb.b,
+    };
     context.ws2812.write(&context.ws2812_state).await;
     Ok(())
 }
 
 async fn set_all_led_handler(context: &mut PerpsiContext, header: WireHeader, rqst: [Rgb8; 24]) {
     info!("set_all_led: seq - {=u32}", header.seq_no);
-    context.ws2812_state.iter_mut().zip(rqst.iter()).for_each(|(s, rgb)| {
-        s.r = rgb.r;
-        s.g = rgb.g;
-        s.b = rgb.b;
-    });
+    context
+        .ws2812_state
+        .iter_mut()
+        .zip(rqst.iter())
+        .for_each(|(s, rgb)| {
+            s.r = rgb.r;
+            s.g = rgb.g;
+            s.b = rgb.b;
+        });
     context.ws2812.write(&context.ws2812_state).await;
 }
 
 static STOP: AtomicBool = AtomicBool::new(false);
 
 #[embassy_executor::task]
-async fn accelerometer_handler(context: PerpsiSpawnContext, header: WireHeader, rqst: StartAccel, sender: Sender<ThreadModeRawMutex, usb::Driver<'static, USB>>) {
+async fn accelerometer_handler(
+    context: PerpsiSpawnContext,
+    header: WireHeader,
+    rqst: StartAccel,
+    sender: Sender<ThreadModeRawMutex, usb::Driver<'static, USB>>,
+) {
     let mut accel = context.accel.lock().await;
-    if sender.reply::<StartAccelerationEndpoint>(header.seq_no, &()).await.is_err() {
+    if sender
+        .reply::<StartAccelerationEndpoint>(header.seq_no, &())
+        .await
+        .is_err()
+    {
         defmt::error!("Failed to reply, stopping accel");
         return;
     }

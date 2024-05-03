@@ -81,6 +81,8 @@ sendor readings, and where making one request for every response would add a lot
 "Notifications" are relevant when you are RARELY sending messages, but don't want to constantly
 "poll" for a result.
 
+## Topics
+
 `postcard-rpc` also allows for this in either direction, referred to as `Topic`s. The name `Topic`
 comes from MQTT, which is used for publish and subscribe style data transfers.
 
