@@ -22,7 +22,7 @@ use {
 pub mod ws2812;
 use embassy_time as _;
 
-bind_interrupts!(struct Irqs {
+bind_interrupts!(pub struct Irqs {
     ADC_IRQ_FIFO => adc::InterruptHandler;
     USBCTRL_IRQ => usb::InterruptHandler<USB>;
 });

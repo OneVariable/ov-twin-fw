@@ -1079,15 +1079,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
 
 [[package]]
-name = "perpsi-icd"
-version = "0.1.0"
-dependencies = [
- "postcard",
- "postcard-rpc",
- "serde",
-]
-
-[[package]]
 name = "petgraph"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1857,7 +1848,6 @@ dependencies = [
  "heapless 0.8.0",
  "lis3dh-async",
  "panic-probe",
- "perpsi-icd",
  "pio",
  "pio-proc",
  "portable-atomic",
@@ -1866,4 +1856,14 @@ dependencies = [
  "rand",
  "smart-leds",
  "static_cell",
+ "workbook-icd",
+]
+
+[[package]]
+name = "workbook-icd"
+version = "0.1.0"
+dependencies = [
+ "postcard",
+ "postcard-rpc",
+ "serde",
 ]

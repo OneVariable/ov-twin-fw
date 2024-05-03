@@ -1,16 +1,23 @@
 [package]
-name = "perpsi-host-client"
+name = "workbook-host-client"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies.perpsi-icd]
-path = "../perpsi-icd"
+[dependencies.workbook-icd]
+path = "../workbook-icd"
 
 [dependencies.postcard-rpc]
 version = "0.4"
 features = [
     "use-std",
     "raw-nusb",
+]
+
+[dependencies.tokio]
+version = "1.37.0"
+features = [
+    "rt-multi-thread",
+    "macros"
 ]
 
 [patch.crates-io]

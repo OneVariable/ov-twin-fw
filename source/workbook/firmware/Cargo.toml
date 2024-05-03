@@ -24,7 +24,7 @@ postcard-rpc            = { version = "0.4", features = ["embassy-usb-0_2-server
 postcard                = { version = "1.0.8", features = ["experimental-derive"] }
 portable-atomic         = { version = "1.6.0", features = ["critical-section"] }
 
-perpsi-icd = { path = "../perpsi-icd" }
+workbook-icd            = { path = "../workbook-icd" }
 
 cortex-m-rt         = "0.7.0"
 defmt               = "0.3"
