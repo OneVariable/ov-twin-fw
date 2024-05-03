@@ -51,3 +51,7 @@ $ cargo build --release --bin hello-01
 If you got an error, make sure you followed the [Setup steps](./setup.md), and let me know if you
 are stuck!
 
+We'll now work through all of the sensors on the board, so you can see how to interact with them.
+
+We won't focus too much on how the drivers of these sensors were written, as that's outside the
+scope of this workshop. Feel free to ask questions though!

@@ -1,7 +1,8 @@
 #![no_std]
 
 use {
-    defmt_rtt as _, embassy_rp::{
+    defmt_rtt as _,
+    embassy_rp::{
         adc::{self, Adc, Config as AdcConfig},
         bind_interrupts,
         flash::{Blocking, Flash},
@@ -12,7 +13,11 @@ use {
         },
         spi::{self, Async, Spi},
         usb,
-    }, embassy_time::Delay, embedded_hal_bus::spi::ExclusiveDevice, lis3dh_async::{Lis3dh, Lis3dhSPI}, panic_probe as _
+    },
+    embassy_time::Delay,
+    embedded_hal_bus::spi::ExclusiveDevice,
+    lis3dh_async::{Lis3dh, Lis3dhSPI},
+    panic_probe as _,
 };
 pub mod ws2812;
 use embassy_time as _;
@@ -131,6 +136,7 @@ pub struct Accelerometer {
     pub dev: Accel,
 }
 
+#[derive(Debug, PartialEq, defmt::Format)]
 pub struct AccelReading {
     pub x: i16,
     pub y: i16,
