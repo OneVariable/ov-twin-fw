@@ -242,6 +242,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "hermit-abi"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d231dfb89cfffdbc30e7fc41579ed6066ad03abda9e567ccafae602b97ec5024"
+
+[[package]]
 name = "io-kit-sys"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -374,6 +380,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "num_cpus"
+version = "1.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4161fcb6d602d4d2081af7c3a45852d875a03dd337a6bfdd6e06407b61342a43"
+dependencies = [
+ "hermit-abi",
+ "libc",
+]
+
+[[package]]
 name = "nusb"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -410,23 +426,6 @@ name = "overload"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
-
-[[package]]
-name = "perpsi-host-client"
-version = "0.1.0"
-dependencies = [
- "perpsi-icd",
- "postcard-rpc",
-]
-
-[[package]]
-name = "perpsi-icd"
-version = "0.1.0"
-dependencies = [
- "postcard",
- "postcard-rpc",
- "serde",
-]
 
 [[package]]
 name = "pin-project"
@@ -712,6 +711,7 @@ checksum = "1adbebffeca75fcfd058afa480fb6c0b81e165a0323f9c9d39c9697e37c46787"
 dependencies = [
  "backtrace",
  "bytes",
+ "num_cpus",
  "pin-project-lite",
  "tokio-macros",
 ]
@@ -1005,7 +1005,20 @@ version = "0.52.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bec47e5bfd1bff0eeaf6d8b485cc1074891a197ab4225d504cb7a1ab88b02bf0"
 
-[[patch.unused]]
-name = "static_cell"
-version = "2.0.0"
-source = "git+https://github.com/jamesmunns/static-cell?rev=c0337f742edcfc5d7bf91f008e37ccdb53cf2cce#c0337f742edcfc5d7bf91f008e37ccdb53cf2cce"
+[[package]]
+name = "workbook-host-client"
+version = "0.1.0"
+dependencies = [
+ "postcard-rpc",
+ "tokio",
+ "workbook-icd",
+]
+
+[[package]]
+name = "workbook-icd"
+version = "0.1.0"
+dependencies = [
+ "postcard",
+ "postcard-rpc",
+ "serde",
+]

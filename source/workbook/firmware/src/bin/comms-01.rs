@@ -3,7 +3,10 @@
 
 use defmt::info;
 use embassy_executor::Spawner;
-use embassy_rp::{peripherals::USB, usb::{self, Driver, Endpoint, Out}};
+use embassy_rp::{
+    peripherals::USB,
+    usb::{self, Driver, Endpoint, Out},
+};
 
 use embassy_sync::blocking_mutex::raw::ThreadModeRawMutex;
 
@@ -15,10 +18,7 @@ use postcard_rpc::{
 };
 
 use static_cell::ConstInitCell;
-use workbook_fw::{
-    get_unique_id,
-    Irqs,
-};
+use workbook_fw::{get_unique_id, Irqs};
 use workbook_icd::PingEndpoint;
 
 static ALL_BUFFERS: ConstInitCell<AllBuffers<256, 256, 256>> =

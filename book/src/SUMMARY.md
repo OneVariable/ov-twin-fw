@@ -13,5 +13,8 @@
     - [Postcard](./comms-postcard.md)
     - [postcard-rpc](./comms-postcard-rpc.md)
 - [Interacting with the board](./internection.md)
+    - [ICD](./internection-icd.md)
+    - [Firmware](./internection-fw.md)
+    - [Host](./internection-host.md)
 - [Streaming with Topics](./streaming.md)
 - [Custom Applications](./custom.md)

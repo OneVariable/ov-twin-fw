@@ -138,6 +138,14 @@ AccelTopic::Message::Key     = hash("acceleration") + hash(schema(AccelReading))
 
 As of now, keys boil down to an 8-byte value, calculated at compile time as a constant.
 
+This is important for two reasons:
+
+1. It gives us a "unique" ID for every kind of request and response
+2. If the contents of the request or response changes, so does the key! This means that we never
+   have to worry about the issue of one of the devices changing a message's type, and
+   misinterpreting the data (though it means we can't 'partially understand' messages that have
+   changed in a small way).
+
 ### Sequence Numbers
 
 Since we might have multiple requests "In Flight" at one time, we use an incrementing sequence
