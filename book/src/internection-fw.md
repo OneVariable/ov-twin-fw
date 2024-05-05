@@ -22,6 +22,8 @@ spawner.must_spawn(dispatch_task(ep_out, dispatch, &mut buffers.rx_buf));
 spawner.must_spawn(usb_task(device));
 ```
 
+<hr>
+
 Let's break this down piece by piece:
 
 ```rust
@@ -32,6 +34,7 @@ This line is straight out of `embassy-rp`, it just sets up the hardware and inte
 needed to manage the USB hardware at a low level. You would do this for any `embassy-rp` project
 using USB.
 
+<hr>
 
 Next up, we handle some configuration:
 
@@ -66,6 +69,10 @@ pub fn example_config() -> embassy_usb::Config<'static> {
 
 We then overwrite the `manufacturer` and `product` fields to something specific for our exercise.
 
+<hr>
+
+Then, we continue configuring the RP2040's USB hardware:
+
 ```rust
 let buffers = ALL_BUFFERS.take();
 let (device, ep_in, ep_out) = configure_usb(driver, &mut buffers.usb_device, config);
@@ -86,6 +93,8 @@ These lines do three things:
         * `ep_out`, our USB "Bulk Endpoint", in the Out (to the MCU) direction
 * We set up a `Dispatcher` (more on this below), giving it the buffers, the `ep_in`, and a struct
   called `Context`
+
+<hr>
 
 Then, we spawn two tasks:
 

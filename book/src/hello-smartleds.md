@@ -88,11 +88,11 @@ async fn main(spawner: Spawner) {
         mut common, sm0, ..
     } = Pio::new(p.PIO0, ws2812::Irqs);
 
-    // GPIO25 is used for
+    // GPIO25 is used for Smart LEDs
     let ws2812: Ws2812<'static, PIO0, 0, NUM_SMARTLEDS> =
         Ws2812::new(&mut common, sm0, p.DMA_CH0, p.PIN_25);
 
-    // Start the
+    // Start the LED task
     spawner.must_spawn(led_task(ws2812));
 }
 ```

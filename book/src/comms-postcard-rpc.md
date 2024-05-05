@@ -84,7 +84,7 @@ sendor readings, and where making one request for every response would add a lot
 ## Topics
 
 `postcard-rpc` also allows for this in either direction, referred to as `Topic`s. The name `Topic`
-comes from MQTT, which is used for publish and subscribe style data transfers.
+is inspired by MQTT, which is used for publish and subscribe (or "pubsub") style data transfers.
 
 We might define a `Topic` in `postcard-rpc` like this:
 
@@ -164,7 +164,8 @@ PC ---Request 1-->-----.       MCU
    <--Response 2----------'
 ```
 
-Even though our responses come back in a different order, we can still pair them correctly.
+Even though our responses come back in a different order, we can still tell which responses went
+with each request.
 
 ## Putting it all together
 

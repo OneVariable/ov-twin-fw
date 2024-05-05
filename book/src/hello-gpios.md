@@ -68,7 +68,7 @@ spawner.must_spawn(button_task(buttons));
 spawner.must_spawn(pot_task(potentiometer));
 ```
 
-And a two new tasks:
+And two new tasks:
 
 ```rust
 // This is our Button task
