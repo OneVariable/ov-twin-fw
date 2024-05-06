@@ -28,7 +28,11 @@ The reason this is called a "Remote Procedure Call" is because conceptually, we 
 "feel like" a normal function call, and ignore the network entirely, and instead look like:
 
 ```rust
-async fn procedure(Request) -> Response { ... }
+
+async fn procedure(Request) -> Response {
+    // ...
+}
+
 ```
 
 Conceptually, this is similar to things like a REST request over the network, a GET or PUT request
@@ -49,6 +53,7 @@ case we want to use the same types for multiple endpoints.
 We might define an `Endpoint` in `postcard-rpc` like this:
 
 ```rust
+
 #[derive(Debug, PartialEq, Serialize, Deserialize, Schema)]
 pub struct Sleep {
     pub seconds: u32,
@@ -66,6 +71,8 @@ endpoint!(
     SleepDone,      // This is the Response type
     "sleep",        // This is the "path" of the endpoint
 );
+
+
 ```
 
 These endpoints will be defined in some shared library crate between our MCU and our PC.

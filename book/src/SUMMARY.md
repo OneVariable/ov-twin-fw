@@ -16,5 +16,6 @@
     - [ICD](./internection-icd.md)
     - [Firmware](./internection-fw.md)
     - [Host](./internection-host.md)
+- [Endpoints](./endpoints.md)
 - [Streaming with Topics](./streaming.md)
 - [Custom Applications](./custom.md)
